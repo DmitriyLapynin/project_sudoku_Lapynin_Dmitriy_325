@@ -97,13 +97,16 @@ makeEmpty (x:xs) a b = if (b /= 1) then ([x] ++ (makeEmpty xs a (b - 1)))
 makeEmptyX :: [Cell] -> Int -> [Cell]
 makeEmptyX [] _ = []
 makeEmptyX (x : xs) a = if (a /= 1) then (x : (makeEmptyX xs (a - 1)))
-                         else if (current x) == Filled then (Cell {current = Empty} : (makeEmptyX xs (a - 1))) 
+                         else if (current x) == Filled then 
+                             (Cell {current = Empty} : (makeEmptyX xs (a - 1))) 
                              else (x : (makeEmptyX xs (a - 1))) 
 
 -- the function of adding an element
 addNum :: Field -> Int -> Field
 addNum f a = if (couple f) == (0, 0) then f 
-            else f{numbers = addNumY (numbers f) (fst (couple f)) (snd (couple f)) a, gamegrid = makeFilled (gamegrid f) (fst (couple f)) (snd (couple f)), couple = (0, 0)}
+            else f{numbers = addNumY (numbers f) (fst (couple f)) (snd (couple f)) a
+                , gamegrid = makeFilled (gamegrid f) (fst (couple f)) (snd (couple f))
+                , couple = (0, 0)}
 
 -- instead of zero, we add an element
 addNumY :: [[Int]] -> Int -> Int -> Int -> [[Int]]
@@ -147,7 +150,8 @@ makeReady (x:xs) a b = if (b /= 1) then ([x] ++ (makeReady xs a (b - 1)))
 makeReadyX :: [Cell] -> Int -> [Cell]
 makeReadyX [] _ = []
 makeReadyX (x : xs) a = if (a /= 1) then (x : (makeReadyX xs (a - 1))) 
-                          else if (current x) == Ready then (Cell {current = Empty} : (makeReadyX xs (a - 1)))
+                          else if (current x) == Ready then 
+                              (Cell {current = Empty} : (makeReadyX xs (a - 1)))
                               else if (current x) == Const then (x : (makeReadyX xs (a - 1)))
                                 else if (current x) == Filled then (x : (makeReadyX xs (a - 1)))
                                 else (Cell {current = Ready} : (makeReadyX xs (a - 1)))

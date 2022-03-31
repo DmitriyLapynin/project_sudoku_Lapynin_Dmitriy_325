@@ -5,6 +5,10 @@ import Type
 import Field
 import Graphic
 import Data.List
+import Check
+
+fileGame :: FilePath 
+fileGame = "field.txt"
 
 -- update the field (does nothing)
 fieldUpdate :: Float -> Field -> Field
@@ -12,22 +16,24 @@ fieldUpdate _ f = f
 
 -- changing the state of the field
 handleBEvent :: Event -> Field -> Field        
-handleBEvent (EventKey (MouseButton LeftButton) Down _ mouse) f = if ((fst (couple f) == 0) 
-                                                                  && (not (checkConst (gamegrid f) (mouseX x 1) (mouseY y 1)))                                                  
-                                                                  && (not (checkFilled (gamegrid f) (mouseX x 1) (mouseY y 1))))
-                                                                  || ((mouseX x 1) == fst (couple f) 
-                                                                  && (mouseY y 1) == snd (couple f))
-                                                                   then getReady f (mouseX x 1) (mouseY y 1)  
-                                                                  else f
-                                                                where
-                                                                   x = floor(fst mouse)
-                                                                   y = floor(snd mouse)
-handleBEvent (EventKey (MouseButton RightButton) Down _ mouse) f = if (checkConst (gamegrid f) (mouseX x 1) (mouseY y 1)) 
-                                                                   || (checkReady (gamegrid f) (mouseX x 1) (mouseY y 1)) then f
-                                                                   else delNum f (mouseX x 1) (mouseY y 1)  
-                                                                where
-                                                                   x = floor(fst mouse)
-                                                                   y = floor(snd mouse)                                                                                              
+handleBEvent (EventKey (MouseButton LeftButton) Down _ mouse) f 
+                                    = if ((fst (couple f) == 0) 
+                                    && (not (checkConst (gamegrid f) (mouseX f x 1) (mouseY f y 1)))                                                  
+                                    && (not (checkFilled (gamegrid f) (mouseX f x 1) (mouseY f y 1))))
+                                    || ((mouseX f x 1) == fst (couple f) 
+                                    && (mouseY f y 1) == snd (couple f))
+                                    then getReady f (mouseX f x 1) (mouseY f y 1)  
+                                       else f
+                                          where
+                                             x = fst mouse
+                                             y = snd mouse
+handleBEvent (EventKey (MouseButton RightButton) Down _ mouse) f 
+                                    = if (checkConst (gamegrid f) (mouseX f x 1) (mouseY f y 1)) 
+                                    || (checkReady (gamegrid f) (mouseX f x 1) (mouseY f y 1)) then f
+                                       else delNum f (mouseX f x 1) (mouseY f y 1)  
+                                          where
+                                          x = fst mouse
+                                          y = snd mouse                                                                                             
 handleBEvent (EventKey (SpecialKey KeyF1) Down _ _) f = addNum f 1
 handleBEvent (EventKey (SpecialKey KeyF2) Down _ _) f = addNum f 2
 handleBEvent (EventKey (SpecialKey KeyF3) Down _ _) f = addNum f 3
@@ -41,12 +47,17 @@ handleBEvent _ f = f
 
 
 -- Get the coordinates of the cell under the mouse
-mouseX :: Int -> Int -> Int 
-mouseX x p = if (x <= -225 + p*50) then p else (mouseX x (p + 1))
+mouseX :: Field -> Float -> Int -> Int 
+mouseX f x p = if (x <= -a + b) then p else (mouseX f x (p + 1))
+               where 
+                  a = fromIntegral (screenWidth f) / 2
+                  b = fromIntegral (getSize p)
 
-mouseY :: Int -> Int -> Int 
-mouseY y p = if (y >= 225 - p*50) then p else (mouseY y (p + 1))
-
+mouseY :: Field -> Float -> Int -> Int 
+mouseY f y p = if (y >= a - b) then p else (mouseY f y (p + 1))
+             where 
+                  a = fromIntegral (screenWidth f) / 2
+                  b = fromIntegral (getSize p)
 
 playGame :: Field -> IO()
 playGame f = play (display f) bgColor fps f drawGame handleBEvent fieldUpdate
@@ -60,11 +71,11 @@ playGame f = play (display f) bgColor fps f drawGame handleBEvent fieldUpdate
 
 run :: IO ()
 run = do
-    filecontent <- readFile "field.txt"
-    let board = readField (filecontent)
-    playGame board
-   --filecontent <- readFile "field.txt"
-   --print(matrOfSquare(makeMatr (makeNum filecontent) []))
+   file <- readFile fileGame
+   if (checkConf (lines file)) then do
+      let board = readField file
+      playGame board
+   else putStrLn ("Error. Wrong symbol in file " ++ fileGame) 
       
        
 
