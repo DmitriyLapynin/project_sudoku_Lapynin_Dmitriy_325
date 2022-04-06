@@ -20,8 +20,8 @@ makeNum (x:xs) = (ord(x) - ord('0')) : (makeNum xs)
 
 -- make a matrix
 makeMatr :: [Int] -> [Int]-> [[Int]]
-makeMatr [] y = []
-makeMatr (x:xs) y = if (x == -38) then (y : (makeMatr xs []))
+makeMatr [] _ = [] 
+makeMatr (x:xs) y = if (x == (ord('\n') - ord('0'))) then (y : (makeMatr xs []))
                     else (makeMatr xs (y ++ [x]))
 
 -- make a field from a file

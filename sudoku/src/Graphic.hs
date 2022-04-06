@@ -3,7 +3,7 @@ module Graphic where
 
 import Graphics.Gloss.Interface.Pure.Game
 import Type
-import Field
+--import Field
 import Data.List
 
 -- cell size in pixels
@@ -104,18 +104,15 @@ del_Zero_row (x : xs) = if (x == 0) then (del_Zero_row xs)
 -- paint over the cell
 drawMark :: Float -> Float -> State -> Picture
 drawMark x y m 
-  | m == Const = Blank
-  | m == Filled = Blank
   | m == Ready = Translate (x) (y) (Color (green) (Polygon [(1, 2), (1,  a+1), (a, a+1), (a, 2)]))
   | m == Empty = Translate (x) (y) (Color (white) (Polygon [(1, 2), (1,  a+1), (a, a+1), (a, 2)]))
+  | otherwise = Blank
     where a = fromIntegral (cellSize - 2)
 
 drawMarkGrey :: Float -> Float -> State -> Picture
 drawMarkGrey x y m 
-  | m == Const = Translate (x) (y) (Color (greyN 0.95) (Polygon [(1, 2), (1,  a+1), (a, a+1), (a, 2)]))
-  | m == Filled = Blank
-  | m == Ready = Blank
-  | m == Empty = Blank
+  | m == Const = Translate (x) (y) (Color (greyN 0.92) (Polygon [(1, 2), (1,  a+1), (a, a+1), (a, 2)]))
+  | otherwise = Blank
     where a = fromIntegral (cellSize - 2)
 
 -- highlight constant numbers

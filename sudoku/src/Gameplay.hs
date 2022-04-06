@@ -4,7 +4,6 @@ import Graphics.Gloss.Interface.Pure.Game
 import Type
 import Field
 import Graphic
-import Data.List
 import Check
 
 fileGame :: FilePath 
@@ -62,9 +61,9 @@ mouseY f y p = if (y >= a - b) then p else (mouseY f y (p + 1))
 playGame :: Field -> IO()
 playGame f = play (display f) bgColor fps f drawGame handleBEvent fieldUpdate
         where
-            display f = InWindow "Sudoku" ((screenWidth f), (screenHeight f)) (0, 0)
-            bgColor = white
-            fps = 60
+          display x = InWindow "Sudoku" ((screenWidth x), (screenHeight x)) (0, 0)
+          bgColor = white
+          fps = 60
 
 
 
@@ -72,10 +71,10 @@ playGame f = play (display f) bgColor fps f drawGame handleBEvent fieldUpdate
 run :: IO ()
 run = do
    file <- readFile fileGame
-   if (checkConf (lines file)) then do
+   if (lines file) /= [] && length(lines file) == 9 && checkConf (lines file) then do
       let board = readField file
       playGame board
-   else putStrLn ("Error. Wrong symbol in file " ++ fileGame) 
+   else putStrLn ("Error. Wrong format of file " ++ fileGame) 
       
        
 

@@ -16,7 +16,7 @@ checkSym a
     | otherwise = False 
 
 checkColumn :: String -> Bool 
-checkColumn a = foldr1 (&&) (map (checkSym) a)
+checkColumn a = and (map (checkSym) a)
 
 checkConf :: [String] -> Bool 
-checkConf a = foldr1 (&&) (map (checkColumn) a)
+checkConf a = and (map (checkColumn) a)

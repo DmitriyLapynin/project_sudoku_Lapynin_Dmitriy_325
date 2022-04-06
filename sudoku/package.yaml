@@ -25,7 +25,10 @@ dependencies:
 
 library:
   source-dirs: src
-
+  ghc-options:
+  - -Wall
+  - -Werror
+  
 executables:
   demo-io-exe:
     main:                Main.hs
